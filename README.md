@@ -1,4 +1,4 @@
-# dit-calendar [![Build Status](https://travis-ci.org/vitaB/dit-calendar.svg?branch=master)](https://travis-ci.org/vitaB/dit-calendar)
+# dit-calendar-ui [![Build Status](https://travis-ci.org/dit-calendar/dit-calendar-ui.svg?branch=master)](https://travis-ci.org/dit-calendar/dit-calendar-ui)
 
 Very simple web-ui written in elm. For creating events and tasks from the perspective of the organization group.
 
