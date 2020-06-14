@@ -10,11 +10,11 @@ import Http.Detailed as HttpEx
 import Maybe exposing (withDefault)
 
 
-saveCalendarEntry : CalendarEntry -> Cmd Msg
-saveCalendarEntry model =
-    Http.riskyRequest
+saveCalendarEntry : String -> CalendarEntry -> Cmd Msg
+saveCalendarEntry token model =
+    Http.request
         { method = "PUT"
-        , headers = []
+        , headers = [Http.header "Authorization" ("Bearer " ++ token)]
         , url = Server.calendarEntry (withDefault 0 model.entryId)
         , body = Http.jsonBody (calendarEntryEncoder model)
         , expect = HttpEx.expectString SaveCalendarResult
@@ -23,11 +23,11 @@ saveCalendarEntry model =
         }
 
 
-createCalendarEntry : CalendarEntry -> Cmd Msg
-createCalendarEntry model =
-    Http.riskyRequest
+createCalendarEntry : String -> CalendarEntry -> Cmd Msg
+createCalendarEntry token model =
+    Http.request
         { method = "POST"
-        , headers = []
+        , headers = [Http.header "Authorization" ("Bearer " ++ token)]
         , url = Server.calendarEntries
         , body = Http.jsonBody (calendarEntryEncoder model)
         , expect = HttpEx.expectString SaveCalendarResult
@@ -36,11 +36,11 @@ createCalendarEntry model =
         }
 
 
-loadCalendarEntries : Cmd CalendarList.Msg
-loadCalendarEntries =
-    Http.riskyRequest
+loadCalendarEntries : String -> Cmd CalendarList.Msg
+loadCalendarEntries token =
+    Http.request
         { method = "GET"
-        , headers = []
+        , headers = [Http.header "Authorization" ("Bearer " ++ token)]
         , url = Server.calendarEntries
         , body = Http.emptyBody
         , expect = HttpEx.expectString CalendarList.GetCalendarEntriesResult
@@ -49,11 +49,11 @@ loadCalendarEntries =
         }
 
 
-loadCalendarEntry : Int -> Cmd Msg
-loadCalendarEntry cId =
-    Http.riskyRequest
+loadCalendarEntry : String -> Int -> Cmd Msg
+loadCalendarEntry token cId =
+    Http.request
         { method = "GET"
-        , headers = []
+        , headers = [Http.header "Authorization" ("Bearer " ++ token)]
         , url = Server.calendarEntry cId
         , body = Http.emptyBody
         , expect = HttpEx.expectString GetCalendarEntryResult

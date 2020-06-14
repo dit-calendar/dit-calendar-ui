@@ -4,14 +4,14 @@ import Bootstrap.Alert as Alert
 import Browser.Navigation as Navigation
 import Data.Login exposing (Model, Msg(..))
 import Endpoint.AuthEndpoint exposing (login, loginResponse)
+import Endpoint.JsonParser.AuthParser exposing (parseLoginResult)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 
-
 init : ( Model, Cmd Msg )
 init =
-    ( Model "" "" [], Cmd.none )
+    ( Model "" "" [] "", Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -28,8 +28,8 @@ update msg model =
 
         HttpLogin result ->
             case result of
-                Ok _ ->
-                    ( model, Navigation.load "#calendar" )
+                Ok body ->
+                    ( { model | token = parseLoginResult body }, Navigation.load "#calendar" )
 
                 Err error ->
                     ( loginResponse error model, Cmd.none )

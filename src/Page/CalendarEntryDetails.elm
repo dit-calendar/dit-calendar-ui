@@ -16,9 +16,9 @@ import Html.Events as HtmlEvent
 import Maybe exposing (withDefault)
 
 
-init : CalendarEntry -> ( Model, Cmd Msg )
-init cal =
-    ( { calendarEntry = cal, tasks = [], messages = Problems [] }, Cmd.none )
+init : String -> CalendarEntry -> ( Model, Cmd Msg )
+init cookie cal =
+    ( { calendarEntry = cal, tasks = [], messages = Problems [], token = cookie }, Cmd.none )
 
 
 initEmptyModelForPageReload : Int -> Model
@@ -27,7 +27,7 @@ initEmptyModelForPageReload cId =
         cEmptyCalendarEntry =
             { emptyCalendarEntry | entryId = Just cId }
     in
-    { calendarEntry = cEmptyCalendarEntry, tasks = [], messages = Problems [] }
+    { calendarEntry = cEmptyCalendarEntry, tasks = [], messages = Problems [], token = "" }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -42,10 +42,10 @@ update msg model =
         SaveCalendar ->
             ( { model | messages = Problems [] }
             , if not (model.calendarEntry.entryId == Nothing) then
-                saveCalendarEntry model.calendarEntry
+                saveCalendarEntry model.token model.calendarEntry
 
               else
-                createCalendarEntry model.calendarEntry
+                createCalendarEntry model.token model.calendarEntry
             )
 
         SaveCalendarResult result ->
@@ -59,11 +59,11 @@ update msg model =
                 newCalendarModel =
                     getCalendarEntryResponse result model
             in
-            ( newCalendarModel, loadCalendarEntryTasks (withDefault 0 newCalendarModel.calendarEntry.entryId) )
+            ( newCalendarModel, loadCalendarEntryTasks model.token (withDefault 0 newCalendarModel.calendarEntry.entryId) )
 
         GetCalendarEntry ->
             --TODO sobald id in url übergeben wird, werden tasks nachgeladen; selbst wenn calendar nicht existent
-            ( model, loadCalendarEntry (withDefault 0 model.calendarEntry.entryId) )
+            ( model, loadCalendarEntry model.token (withDefault 0 model.calendarEntry.entryId) )
 
 
 updateCalendarDetails : CalendarDetailMsg -> CalendarEntry -> CalendarEntry

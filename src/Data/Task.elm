@@ -28,6 +28,7 @@ emptyTask calendarId startDate =
 type alias Model =
     { task : Task
     , messages : Messages
+    , token : String
     }
 
 

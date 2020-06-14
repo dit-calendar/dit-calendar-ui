@@ -22,6 +22,7 @@ type alias Model =
     { calendarEntry : CalendarEntry
     , tasks : List Task
     , messages : Messages
+    , token : String
     }
 
 

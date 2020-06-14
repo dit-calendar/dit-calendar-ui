@@ -11,26 +11,18 @@ import Http.Detailed as HttpEx
 
 login : Login.Model -> Cmd Login.Msg
 login model =
-    Http.riskyRequest
-        { method = "POST"
-        , headers = []
-        , url = Server.loginUrl
+    Http.post
+        { url = Server.loginUrl
         , body = Http.jsonBody (loginEncoder model)
         , expect = HttpEx.expectString Login.HttpLogin
-        , timeout = Nothing
-        , tracker = Nothing
         }
 
 logout : Cmd Logout.Msg
 logout =
-    Http.riskyRequest
-        { method = "POST"
-        , headers = []
-        , url = Server.logoutUrl
+    Http.post
+        { url = Server.logoutUrl
         , body = Http.emptyBody
         , expect = HttpEx.expectString Logout.HttpLogout
-        , timeout = Nothing
-        , tracker = Nothing
         }
 
 

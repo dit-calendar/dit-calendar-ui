@@ -10,12 +10,12 @@ import Http.Detailed as HttpEx
 import Json.Decode as Decode exposing (Value)
 
 
-loadCalendarEntryTasks : Int -> Cmd Msg
-loadCalendarEntryTasks taskId =
+loadCalendarEntryTasks : String -> Int -> Cmd Msg
+loadCalendarEntryTasks token taskId =
     --TODO hier mit Maybe arbeiten und bei Nothing keine Calendar Task laden oder anderen weg suchen, ansonsten bei nicht vorhandener calendar id wird unnötig nach tasks gesucht
-    Http.riskyRequest
+    Http.request
         { method = "GET"
-        , headers = []
+        , headers = [Http.header "Authorization" ("Bearer " ++ token)]
         , url = Server.calendarTask taskId
         , body = Http.emptyBody
         , expect = HttpEx.expectString GetCalendarEntryTasksResult

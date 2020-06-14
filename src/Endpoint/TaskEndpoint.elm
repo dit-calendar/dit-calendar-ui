@@ -9,11 +9,11 @@ import Http.Detailed as HttpEx
 import Maybe exposing (withDefault)
 
 
-updateTask : Task -> Cmd Msg
-updateTask model =
-    Http.riskyRequest
+updateTask : String -> Task -> Cmd Msg
+updateTask token model =
+    Http.request
         { method = "PUT"
-        , headers = []
+        , headers = [Http.header "Authorization" ("Bearer " ++ token)]
         , url = Server.updateCalendarTask (withDefault 0 model.calendarEntryId) (withDefault 0 model.taskId)
         , body = Http.jsonBody (taskEncoder model)
         , expect = HttpEx.expectString CreateTaskResult
@@ -22,11 +22,11 @@ updateTask model =
         }
 
 
-createTask : Task -> Cmd Msg
-createTask model =
-    Http.riskyRequest
+createTask : String -> Task -> Cmd Msg
+createTask token model =
+    Http.request
         { method = "POST"
-        , headers = []
+        , headers = [Http.header "Authorization" ("Bearer " ++ token)]
         , url = Server.calendarTask (withDefault 0 model.calendarEntryId)
         , body = Http.jsonBody (taskEncoder model)
         , expect = HttpEx.expectString CreateTaskResult

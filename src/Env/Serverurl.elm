@@ -43,8 +43,8 @@ calendarEntry entryId =
 
 baseUrl : String
 baseUrl =
-    -- "http://localhost:8080/"
-    "https://dit-calendar-server-vitab.cloud.okteto.net/"
+    "http://localhost:8080/"
+    -- "https://dit-calendar-server-vitab.cloud.okteto.net/"
 
 
 serverStartUpUrl =

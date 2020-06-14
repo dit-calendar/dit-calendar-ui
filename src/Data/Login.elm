@@ -8,6 +8,7 @@ type alias Model =
     { name : String
     , password : String
     , problems : List String
+    , token : String
     }
 
 

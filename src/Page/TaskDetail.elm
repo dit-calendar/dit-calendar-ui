@@ -25,12 +25,12 @@ main =
 
 initMain : () -> ( Model, Cmd Msg )
 initMain _ =
-    ( Model (Task Nothing Nothing 0 "" Nothing "" "" Nothing Nothing) (Problems []), Cmd.none )
+    ( Model (Task Nothing Nothing 0 "" Nothing "" "" Nothing Nothing) (Problems []) "", Cmd.none )
 
 
-init : Task -> ( Model, Cmd Msg )
-init task =
-    ( Model task (Problems []), Cmd.none )
+init : String -> Task -> ( Model, Cmd Msg )
+init token task =
+    ( Model task (Problems []) token, Cmd.none )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -42,10 +42,10 @@ update msg model =
         SaveTask ->
             ( { model | messages = Problems [] }
             , if model.task.taskId /= Nothing then
-                updateTask model.task
+                updateTask model.token model.task
 
               else
-                createTask model.task
+                createTask model.token model.task
             )
 
         CreateTaskResult result ->

@@ -8,12 +8,13 @@ import Http.Detailed as HttpEx
 type alias Model =
     { calendarEntries : List CalendarEntry
     , problems : List String
+    , token: String
     }
 
 
-emptyModel : Model
-emptyModel =
-    { calendarEntries = [], problems = [] }
+emptyModel : String -> Model
+emptyModel jwt =
+    { calendarEntries = [], problems = [], token = jwt }
 
 
 type Msg

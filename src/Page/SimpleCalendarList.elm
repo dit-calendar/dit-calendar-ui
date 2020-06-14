@@ -24,14 +24,14 @@ main =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    update PerformGetCalendarEntries emptyModel
+    update PerformGetCalendarEntries (emptyModel "")
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         PerformGetCalendarEntries ->
-            ( model, loadCalendarEntries )
+            ( model, loadCalendarEntries model.token )
 
         GetCalendarEntriesResult result ->
             ( calendarEntriesResponse result model, Cmd.none )

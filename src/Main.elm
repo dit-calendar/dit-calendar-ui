@@ -34,6 +34,7 @@ type alias Model =
     , page : Page
     , navState : Navbar.State
     , serverStarUpLoadingState : ServerDeploy.Model
+    , token : String
     }
 
 
@@ -71,8 +72,9 @@ init _ url key =
             urlUpdate url
                 { navKey = key
                 , navState = navState
-                , page = LoginPage { name = "", password = "", problems = [] }
+                , page = LoginPage { name = "", password = "", problems = [], token = "" }
                 , serverStarUpLoadingState = serverStartUpState
+                , token = ""
                 }
     in
     ( model, Cmd.batch [ urlCmd, navCmd, Cmd.map ServerHealthMsg serverStartUpCmd ] )
@@ -140,12 +142,12 @@ update msg model =
                             ( model, Navigation.load ("#calendar/" ++ String.fromInt eId) )
 
                         Nothing ->
-                            stepCalendarDetails model (CalendarEntryDetails.init entry)
+                            stepCalendarDetails model (CalendarEntryDetails.init model.token entry)
 
                 _ ->
                     case model.page of
                         SimpleCalendarPage calendar ->
-                            stepCalendar model (CalendarList.update calendarMsg calendar)
+                            stepCalendar model (CalendarList.update calendarMsg { calendar | token = model.token })
 
                         _ ->
                             ( model, Cmd.none )
@@ -153,12 +155,12 @@ update msg model =
         CalendarDetailMsg calendarDetailMsg ->
             case calendarDetailMsg of
                 CalendarEntryDetails.OpenTaskDetailsView task ->
-                    stepTaskDetails model (TaskDetail.init task)
+                    stepTaskDetails model (TaskDetail.init model.token task)
 
                 _ ->
                     case model.page of
                         CalendarDetailsPage calendarDetails ->
-                            stepCalendarDetails model (CalendarEntryDetails.update calendarDetailMsg calendarDetails)
+                            stepCalendarDetails model (CalendarEntryDetails.update calendarDetailMsg { calendarDetails | token = model.token })
 
                         _ ->
                             ( model, Cmd.none )
@@ -166,7 +168,7 @@ update msg model =
         TaskDetailMsg tskMsg ->
             case model.page of
                 TaskDetailPage task ->
-                    stepTaskDetails model (TaskDetail.update tskMsg task)
+                    stepTaskDetails model (TaskDetail.update tskMsg { task | token = model.token })
 
                 _ ->
                     ( model, Cmd.none )
@@ -187,7 +189,7 @@ stepHealth model ( startUpState, cmd ) =
 
 stepLogin : Model -> ( Login.Model, Cmd Login.Msg ) -> ( Model, Cmd Msg )
 stepLogin model ( login, cmds ) =
-    ( { model | page = LoginPage login }
+    ( { model | page = LoginPage login, token = login.token }
     , Cmd.map LoginMsg cmds
     )
 
@@ -237,11 +239,11 @@ urlUpdate url model =
             case route of
                 SimpleCalendarPage _ ->
                     -- needed to perform request if url was changed
-                    stepCalendar model (CalendarList.update CalendarList.PerformGetCalendarEntries CalendarList.emptyModel)
+                    stepCalendar model (CalendarList.update CalendarList.PerformGetCalendarEntries (CalendarList.emptyModel model.token))
 
                 CalendarDetailsPage calendar ->
                     -- needed to perform request if url was changed
-                    stepCalendarDetails model (CalendarEntryDetails.update CalendarEntryDetails.GetCalendarEntry calendar)
+                    stepCalendarDetails model (CalendarEntryDetails.update CalendarEntryDetails.GetCalendarEntry { calendar | token = model.token })
 
                 _ ->
                     ( { model | page = route }, Cmd.none )
@@ -260,10 +262,10 @@ routeParser =
             RegisterModel "" "" "" ""
     in
     UrlParser.oneOf
-        [ UrlParser.map (LoginPage { name = "", password = "", problems = [] }) UrlParser.top
-        , UrlParser.map (LoginPage { name = "", password = "", problems = [] }) (UrlParser.s "login")
+        [ UrlParser.map (LoginPage { name = "", password = "", problems = [], token = "" }) UrlParser.top
+        , UrlParser.map (LoginPage { name = "", password = "", problems = [], token = "" }) (UrlParser.s "login")
         , UrlParser.map (RegisterPage { register = reg, problems = [] }) (UrlParser.s "register")
-        , UrlParser.map (SimpleCalendarPage CalendarList.emptyModel) (UrlParser.s "calendar")
+        , UrlParser.map (SimpleCalendarPage (CalendarList.emptyModel "")) (UrlParser.s "calendar")
         , UrlParser.map (\num -> CalendarDetailsPage (CalendarEntryDetails.initEmptyModelForPageReload num)) (UrlParser.s "calendar" </> UrlParser.int)
         ]
 
