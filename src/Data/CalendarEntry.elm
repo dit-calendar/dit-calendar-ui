@@ -27,7 +27,7 @@ type alias Model =
 
 emptyCalendarEntry : CalendarEntry
 emptyCalendarEntry =
-    { entryId = Nothing, version = 0, title = "", description = Nothing, startDate = "", startTime = "", endDate = "", endTime = "" }
+    { entryId = Nothing, version = 0, title = "", description = Nothing, startDate = "", startTime = "00:00", endDate = "", endTime = "23:59" }
 
 
 type CalendarDetailMsg

@@ -102,7 +102,7 @@ view model =
                 , Input.time [ Input.value (withDefault "" taskInfo.endTime), Input.onInput (TaskMsg << EndTime) ]
                 ]
             ]
-        , Button.button [ Button.primary, Button.onClick SaveTask ] [ text "Speichern" ]
+        , Button.button [ Button.success, Button.onClick SaveTask ] [ text "Speichern" ]
         , case model.messages of
             Problems errors ->
                 div [ class "error-messages" ] (List.map viewProblem errors)

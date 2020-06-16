@@ -5,6 +5,7 @@ import Bootstrap.Button as Button exposing (onClick)
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.ListGroup as ListGroup
+import Bootstrap.Utilities.Spacing as Spacing
 import Data.CalendarEntry exposing (CalendarDetailMsg(..), CalendarEntry, Model, Msg(..), emptyCalendarEntry)
 import Data.Task exposing (emptyTask)
 import Data.UIMessages exposing (Messages(..))
@@ -126,13 +127,13 @@ view model =
                 )
                 tasks
             )
-        , Button.button [ Button.primary, onClick SaveCalendar ] [ text "Speichern" ]
+        , Button.button [ Button.success, onClick SaveCalendar ] [ text "Speichern" ]
 
         -- hide button for create task if calendar entry is not existing yet
         , case calendarInfo.entryId of
             Just eId ->
                 Button.button
-                    [ Button.primary, Button.onClick (OpenTaskDetailsView (emptyTask eId calendarInfo.startDate)) ]
+                    [ Button.primary, Button.onClick (OpenTaskDetailsView (emptyTask eId calendarInfo.startDate)), Button.attrs [ Spacing.ml1 ] ]
                     [ text "Neuen Task Eintrag erstellen" ]
 
             Nothing ->
