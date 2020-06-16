@@ -2,7 +2,7 @@ module Endpoint.JsonParser.AuthParser exposing (authErrorDecoder, loginEncoder, 
 
 import Data.Login as Login
 import Data.Register as Register
-import Endpoint.JsonParser.ResponseErrorDecoder exposing (ErrorResponse, errorDecoder)
+import Endpoint.JsonParser.ResponseErrorDecoder exposing (ErrorResponse, errorDecoderJson)
 import Http.Detailed as HttpEx
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -25,7 +25,7 @@ authDecoder =
 
 authErrorDecoder : HttpEx.Error String -> List String
 authErrorDecoder responseError =
-    errorDecoder responseError authDecoder
+    errorDecoderJson responseError authDecoder
 
 
 registerEncoder : Register.Model -> Encode.Value

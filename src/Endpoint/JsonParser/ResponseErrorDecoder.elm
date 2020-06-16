@@ -1,11 +1,23 @@
-module Endpoint.JsonParser.ResponseErrorDecoder exposing (ErrorResponse, errorDecoder)
+module Endpoint.JsonParser.ResponseErrorDecoder exposing (ErrorResponse, errorDecoder, errorDecoderJson)
 
 import Http.Detailed as HttpEx
 import Json.Decode as Decode
 
 
-errorDecoder : HttpEx.Error String -> Decode.Decoder ErrorResponse -> List String
-errorDecoder responseError responseDecoder =
+errorDecoder : HttpEx.Error String -> List String
+errorDecoder responseError =
+    case responseError of
+        HttpEx.BadStatus _ body ->
+            [body]
+
+        HttpEx.NetworkError ->
+            [ "network error" ]
+
+        _ ->
+            [ "unknown error" ]
+
+errorDecoderJson : HttpEx.Error String -> Decode.Decoder ErrorResponse -> List String
+errorDecoderJson responseError responseDecoder =
     case responseError of
         HttpEx.BadStatus metadata body ->
             let
@@ -28,12 +40,10 @@ errorDecoder responseError responseDecoder =
                     ]
 
         HttpEx.NetworkError ->
-            -- TODO
-            [ "keine Verbindung" ]
+            [ "network error" ]
 
         _ ->
-            --TODO
-            [ "irgendein Fehler" ]
+            [ "unknown error" ]
 
 
 type alias ErrorResponse =

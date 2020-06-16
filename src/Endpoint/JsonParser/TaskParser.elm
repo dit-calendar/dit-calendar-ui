@@ -49,12 +49,7 @@ tasksDecoder calendarId =
 
 taskErrorsDecoder : HttpEx.Error String -> List String
 taskErrorsDecoder responseError =
-    errorDecoder responseError taskErrorDecoder
-
-
-taskErrorDecoder : Decode.Decoder ErrorResponse
-taskErrorDecoder =
-    Decode.map ErrorResponse Decode.string
+    errorDecoder responseError
 
 
 parseTaskResult : Maybe Int -> ( Http.Metadata, String ) -> Result String Task

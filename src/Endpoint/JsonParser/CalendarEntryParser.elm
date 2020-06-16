@@ -93,9 +93,4 @@ parseCalendarEntryResult ( meta, body ) =
 
 calendarErrorsDecoder : HttpEx.Error String -> List String
 calendarErrorsDecoder responseError =
-    errorDecoder responseError calendarErrorDecoder
-
-
-calendarErrorDecoder : Decode.Decoder ErrorResponse
-calendarErrorDecoder =
-    Decode.map ErrorResponse Decode.string
+    errorDecoder responseError

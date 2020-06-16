@@ -22,7 +22,7 @@ type alias Task =
 
 emptyTask : Int -> String -> Task
 emptyTask calendarId startDate =
-    { calendarEntryId = Just calendarId, taskId = Nothing, version = 0, title = "", description = Nothing, startDate = startDate, startTime = "", endDate = Nothing, endTime = Nothing }
+    { calendarEntryId = Just calendarId, taskId = Nothing, version = 0, title = "", description = Nothing, startDate = startDate, startTime = "00:00", endDate = Nothing, endTime = Nothing }
 
 
 type alias Model =
