@@ -63,4 +63,4 @@ parseTaskResult calendarId ( meta, body ) =
             Ok task
 
         Err error ->
-            Err ("fehler beim decodieren des calendars: " ++ Decode.errorToString error)
+            Err ("error when decoding task: " ++ Decode.errorToString error)

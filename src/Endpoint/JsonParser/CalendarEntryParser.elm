@@ -74,7 +74,7 @@ parseCalendarEntriesResult ( meta, body ) =
             Ok calendarEntries
 
         Err error ->
-            Err ("fehler beim decodieren der calendar Einträge" ++ Decode.errorToString error)
+            Err ("error when decoding calendars" ++ Decode.errorToString error)
 
 
 parseCalendarEntryResult : ( Http.Metadata, String ) -> Result String CalendarEntry
@@ -88,7 +88,7 @@ parseCalendarEntryResult ( meta, body ) =
             Ok calendarEntry
 
         Err error ->
-            Err ("fehler beim decodieren des calendars: " ++ Decode.errorToString error)
+            Err ("error when decoding calendar: " ++ Decode.errorToString error)
 
 
 calendarErrorsDecoder : HttpEx.Error String -> List String

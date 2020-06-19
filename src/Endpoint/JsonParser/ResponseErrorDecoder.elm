@@ -11,7 +11,7 @@ errorDecoder responseError =
             [body]
 
         HttpEx.NetworkError ->
-            [ "network error" ]
+            [ "network problem" ]
 
         _ ->
             [ "unknown error" ]
@@ -29,8 +29,7 @@ errorDecoderJson responseError responseDecoder =
                     [ regResponse.message ]
 
                 Err error ->
-                    --TODO beim decodieren des Fehlers ist was scheifgelaufen
-                    [ "beim decodieren des Fehlers ist was scheifgelaufen. "
+                    [ "error when decoding the error message"
                         ++ "StatusCode: "
                         ++ String.fromInt metadata.statusCode
                         ++ ", StatusCode: "
@@ -40,7 +39,7 @@ errorDecoderJson responseError responseDecoder =
                     ]
 
         HttpEx.NetworkError ->
-            [ "network error" ]
+            [ "network problem" ]
 
         _ ->
             [ "unknown error" ]

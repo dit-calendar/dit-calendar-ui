@@ -38,7 +38,7 @@ updateTest =
                             Model (RegisterPage.RegisterModel "" "" "" "") [ "start Fehler" ]
 
                         expectedModel =
-                            Model (RegisterPage.RegisterModel "" "" "" "") [ "irgendein Fehler" ]
+                            Model (RegisterPage.RegisterModel "" "" "" "") [ "unknown error" ]
                     in
                     Expect.all
                         [ first >> Expect.equal expectedModel
