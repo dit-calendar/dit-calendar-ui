@@ -2,6 +2,8 @@ module Page.CalendarEntryDetails exposing (init, initEmptyModelForPageReload, up
 
 import Bootstrap.Alert as Alert
 import Bootstrap.Button as Button exposing (onClick)
+import Bootstrap.Card as Card
+import Bootstrap.Card.Block as Block
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.ListGroup as ListGroup
@@ -11,7 +13,7 @@ import Data.Task exposing (emptyTask)
 import Data.UIMessages exposing (Messages(..))
 import Endpoint.CalendarEntryEndpoint exposing (createCalendarEntry, getCalendarEntryResponse, loadCalendarEntry, saveCalendarEntry, saveCalendarEntryResponse)
 import Endpoint.CalendarTaskEndpoint exposing (calendarEntryTasksResponse, loadCalendarEntryTasks)
-import Html exposing (Html, div, h4, text)
+import Html exposing (Html, div, h4, q, text)
 import Html.Attributes exposing (class)
 import Html.Events as HtmlEvent
 import Maybe exposing (withDefault)
@@ -135,6 +137,19 @@ view model =
                 Button.button
                     [ Button.primary, Button.onClick (OpenTaskDetailsView (emptyTask eId calendarInfo.startDate)), Button.attrs [ Spacing.ml1 ] ]
                     [ text "Neuen Task Eintrag erstellen" ]
+
+            Nothing ->
+                div [] []
+        , case calendarInfo.entryId of
+            Just eId ->
+                div [ Spacing.mt2 ]
+                    [ Card.config []
+                        |> Card.header [] [ text "How to post this calendar entry in telegram?" ]
+                        |> Card.block []
+                            [ Block.text [] [ text "write in your telegram chat: ", q [] [ text ("/postcalendar " ++ String.fromInt eId) ] ]
+                            ]
+                        |> Card.view
+                    ]
 
             Nothing ->
                 div [] []
