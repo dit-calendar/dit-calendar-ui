@@ -83,7 +83,7 @@ view model =
     div []
         [ Form.form []
             [ h4 [] [ text "Task Eintrag" ]
-            , Form.group []
+            , Form.formInline []
                 [ Form.label [] [ text "title" ]
                 , Input.text [ Input.value taskInfo.title, Input.onInput (TaskMsg << Title) ]
                 ]

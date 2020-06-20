@@ -101,7 +101,7 @@ view model =
     div []
         [ Form.form []
             [ h4 [] [ text "Kalendar Eintrag" ]
-            , Form.group []
+            , Form.formInline []
                 [ Form.label [] [ text "title" ]
                 , Input.text [ Input.value calendarInfo.title, Input.onInput (CalendarDetailEditMsg << Title) ]
                 ]
