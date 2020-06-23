@@ -143,10 +143,10 @@ view model =
         , case calendarInfo.entryId of
             Just eId ->
                 div [ Spacing.mt2 ]
-                    [ Card.config []
+                    [ Card.config [ Card.outlinePrimary, Card.attrs [ Spacing.mb3 ] ]
                         |> Card.header [] [ text "How to post this calendar entry in telegram?" ]
                         |> Card.block []
-                            [ Block.text [] [ text "write in your telegram chat: ", q [] [ text ("/postcalendar " ++ String.fromInt eId) ] ]
+                            [ Block.text [] [ text "send in your telegram chat: ", q [] [ text ("/postcalendar " ++ String.fromInt eId) ] ]
                             ]
                         |> Card.view
                     ]
