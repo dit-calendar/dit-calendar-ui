@@ -45,5 +45,7 @@ type Msg
     | GetCalendarEntryResult (Result (HttpEx.Error String) ( Http.Metadata, String ))
     | GetCalendarEntryTasksResult (Result (HttpEx.Error String) ( Http.Metadata, String ))
     | SaveCalendar
+    | CopyCalendar
     | SaveCalendarResult (Result (HttpEx.Error String) ( Http.Metadata, String ))
+    | CopyCalendarResult (Result (HttpEx.Error String) ( Http.Metadata, String ))
     | OpenTaskDetailsView Task

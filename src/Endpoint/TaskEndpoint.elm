@@ -1,5 +1,6 @@
-module Endpoint.TaskEndpoint exposing (createTask, taskResponse, taskUpdateResponse, updateTask)
+module Endpoint.TaskEndpoint exposing (copyTasks, createTask, taskResponse, taskUpdateResponse, updateTask)
 
+import Data.CalendarEntry as CalnedarEntry
 import Data.Task exposing (Model, Msg(..), Task)
 import Data.UIMessages exposing (Messages(..))
 import Endpoint.JsonParser.TaskParser exposing (parseTaskFromListResult, parseTaskResult, taskEncoder, taskErrorsDecoder)
@@ -31,6 +32,23 @@ createTask model =
         , url = Server.calendarTask (withDefault 0 model.calendarEntryId)
         , body = Http.jsonBody (Encode.list taskEncoder [ model ])
         , expect = HttpEx.expectString CreateTaskResult
+        , timeout = Nothing
+        , tracker = Nothing
+        }
+
+
+copyTasks : Int -> List Task -> Cmd CalnedarEntry.Msg
+copyTasks calendarId models =
+    let
+        newTasks =
+            List.map (\model -> { model | calendarEntryId = Just calendarId, taskId = Nothing, version = 0 }) models
+    in
+    Http.riskyRequest
+        { method = "POST"
+        , headers = []
+        , url = Server.calendarTask calendarId
+        , body = Http.jsonBody (Encode.list taskEncoder newTasks)
+        , expect = HttpEx.expectString CalnedarEntry.GetCalendarEntryTasksResult
         , timeout = Nothing
         , tracker = Nothing
         }

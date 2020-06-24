@@ -1,4 +1,14 @@
-module Endpoint.CalendarEntryEndpoint exposing (calendarEntriesResponse, createCalendarEntry, getCalendarEntryResponse, loadCalendarEntries, loadCalendarEntry, saveCalendarEntry, saveCalendarEntryResponse)
+module Endpoint.CalendarEntryEndpoint exposing
+    ( calendarEntriesResponse
+    , copyCalendarEntry
+    , copyCalendarEntryResponse
+    , createCalendarEntry
+    , getCalendarEntryResponse
+    , loadCalendarEntries
+    , loadCalendarEntry
+    , saveCalendarEntry
+    , saveCalendarEntryResponse
+    )
 
 import Data.CalendarEntry exposing (CalendarEntry, Model, Msg(..))
 import Data.SimpleCalendarList as CalendarList
@@ -25,12 +35,33 @@ saveCalendarEntry model =
 
 createCalendarEntry : CalendarEntry -> Cmd Msg
 createCalendarEntry model =
+    let
+        modelWithoutId =
+            { model | entryId = Nothing, version = 0 }
+    in
     Http.riskyRequest
         { method = "POST"
         , headers = []
         , url = Server.calendarEntries
-        , body = Http.jsonBody (calendarEntryEncoder model)
+        , body = Http.jsonBody (calendarEntryEncoder modelWithoutId)
         , expect = HttpEx.expectString SaveCalendarResult
+        , timeout = Nothing
+        , tracker = Nothing
+        }
+
+
+copyCalendarEntry : CalendarEntry -> Cmd Msg
+copyCalendarEntry model =
+    let
+        modelWithoutId =
+            { model | entryId = Nothing, version = 0 }
+    in
+    Http.riskyRequest
+        { method = "POST"
+        , headers = []
+        , url = Server.calendarEntries
+        , body = Http.jsonBody (calendarEntryEncoder modelWithoutId)
+        , expect = HttpEx.expectString CopyCalendarResult
         , timeout = Nothing
         , tracker = Nothing
         }
@@ -108,3 +139,8 @@ getCalendarEntryResponse response model =
 saveCalendarEntryResponse : Result (HttpEx.Error String) ( Http.Metadata, String ) -> Model -> Model
 saveCalendarEntryResponse response model =
     calendarEntryResponse response model SuccessUpdate
+
+
+copyCalendarEntryResponse : Result (HttpEx.Error String) ( Http.Metadata, String ) -> Model -> Model
+copyCalendarEntryResponse response model =
+    calendarEntryResponse response model SuccessCopy
