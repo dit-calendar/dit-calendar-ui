@@ -1,11 +1,12 @@
-module Endpoint.TaskEndpoint exposing (createTask, taskResponse, updateTask)
+module Endpoint.TaskEndpoint exposing (createTask, taskResponse, taskUpdateResponse, updateTask)
 
 import Data.Task exposing (Model, Msg(..), Task)
 import Data.UIMessages exposing (Messages(..))
-import Endpoint.JsonParser.TaskParser exposing (parseTaskResult, taskEncoder, taskErrorsDecoder)
+import Endpoint.JsonParser.TaskParser exposing (parseTaskFromListResult, parseTaskResult, taskEncoder, taskErrorsDecoder)
 import Env.Serverurl as Server
 import Http as Http
 import Http.Detailed as HttpEx
+import Json.Encode as Encode
 import Maybe exposing (withDefault)
 
 
@@ -16,7 +17,7 @@ updateTask model =
         , headers = []
         , url = Server.updateCalendarTask (withDefault 0 model.calendarEntryId) (withDefault 0 model.taskId)
         , body = Http.jsonBody (taskEncoder model)
-        , expect = HttpEx.expectString CreateTaskResult
+        , expect = HttpEx.expectString UpdateTaskResult
         , timeout = Nothing
         , tracker = Nothing
         }
@@ -28,7 +29,7 @@ createTask model =
         { method = "POST"
         , headers = []
         , url = Server.calendarTask (withDefault 0 model.calendarEntryId)
-        , body = Http.jsonBody (taskEncoder model)
+        , body = Http.jsonBody (Encode.list taskEncoder [ model ])
         , expect = HttpEx.expectString CreateTaskResult
         , timeout = Nothing
         , tracker = Nothing
@@ -37,6 +38,25 @@ createTask model =
 
 taskResponse : Result (HttpEx.Error String) ( Http.Metadata, String ) -> Model -> Model
 taskResponse response model =
+    case response of
+        Ok value ->
+            let
+                resp =
+                    parseTaskFromListResult model.task.calendarEntryId value
+            in
+            case resp of
+                Ok task ->
+                    { model | task = task, messages = SuccessUpdate }
+
+                Err error ->
+                    { model | messages = Problems [ error ] }
+
+        Err error ->
+            { model | messages = Problems (taskErrorsDecoder error) }
+
+
+taskUpdateResponse : Result (HttpEx.Error String) ( Http.Metadata, String ) -> Model -> Model
+taskUpdateResponse response model =
     case response of
         Ok value ->
             let

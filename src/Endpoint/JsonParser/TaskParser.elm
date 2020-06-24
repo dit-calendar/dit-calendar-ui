@@ -1,6 +1,6 @@
-module Endpoint.JsonParser.TaskParser exposing (parseTaskResult, taskEncoder, taskErrorsDecoder, tasksDecoder)
+module Endpoint.JsonParser.TaskParser exposing (parseTaskFromListResult, parseTaskResult, taskEncoder, taskErrorsDecoder, tasksDecoder)
 
-import Data.Task exposing (Task)
+import Data.Task exposing (Task, emptyTask)
 import Endpoint.JsonParser.DateTimeDecoder exposing (stringToDate, stringToDateTime)
 import Endpoint.JsonParser.ResponseErrorDecoder exposing (ErrorResponse, errorDecoder)
 import Http as Http
@@ -9,6 +9,7 @@ import Json.Decode as Decode
 import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import Json.Encode as Encode
 import Json.Encode.Extra as Encode
+import Maybe exposing (withDefault)
 
 
 taskEncoder : Task -> Encode.Value
@@ -50,6 +51,20 @@ tasksDecoder calendarId =
 taskErrorsDecoder : HttpEx.Error String -> List String
 taskErrorsDecoder responseError =
     errorDecoder responseError
+
+
+parseTaskFromListResult : Maybe Int -> ( Http.Metadata, String ) -> Result String Task
+parseTaskFromListResult calendarId ( meta, body ) =
+    let
+        decode =
+            Decode.decodeString (Decode.list (tasksDecoder calendarId)) body
+    in
+    case decode of
+        Ok tasks ->
+            Ok (withDefault (emptyTask 0 "") (List.head tasks))
+
+        Err error ->
+            Err ("error when decoding task: " ++ Decode.errorToString error)
 
 
 parseTaskResult : Maybe Int -> ( Http.Metadata, String ) -> Result String Task
