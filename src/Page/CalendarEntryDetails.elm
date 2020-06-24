@@ -114,12 +114,10 @@ view model =
             , Form.formInline []
                 [ Form.label [] [ text "start date" ]
                 , Input.date [ Input.value calendarInfo.startDate, Input.onInput (CalendarDetailEditMsg << StartDate) ]
-                , Input.time [ Input.value calendarInfo.startTime, Input.onInput (CalendarDetailEditMsg << StartTime) ]
                 ]
             , Form.formInline []
                 [ Form.label [] [ text "end date" ]
                 , Input.date [ Input.value calendarInfo.endDate, Input.onInput (CalendarDetailEditMsg << EndDate) ]
-                , Input.time [ Input.value calendarInfo.endTime, Input.onInput (CalendarDetailEditMsg << EndTime) ]
                 ]
             ]
         , ListGroup.custom
