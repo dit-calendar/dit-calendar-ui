@@ -8,6 +8,7 @@ import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.ListGroup as ListGroup
 import Bootstrap.Utilities.Spacing as Spacing
+import Browser.Navigation as Navigation
 import Data.CalendarEntry exposing (CalendarDetailMsg(..), CalendarEntry, Model, Msg(..), emptyCalendarEntry)
 import Data.Task exposing (Task, emptyTask)
 import Data.UIMessages exposing (Messages(..))
@@ -85,6 +86,13 @@ update msg model =
                     copyCalendarEntryResponse result model
             in
             ( newModel, copyTasks (withDefault 0 newModel.calendarEntry.entryId) model.tasks )
+
+        GetCalendarEntryTasksAfterCopyResult result ->
+            let
+                newModel =
+                    copyCalendarEntryResponse result model
+            in
+            ( newModel, Navigation.load ("#calendar/" ++ String.fromInt (withDefault 0 newModel.calendarEntry.entryId)) )
 
 
 updateCalendarDetails : CalendarDetailMsg -> CalendarEntry -> CalendarEntry

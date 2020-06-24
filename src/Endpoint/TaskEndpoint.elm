@@ -48,7 +48,7 @@ copyTasks calendarId models =
         , headers = []
         , url = Server.calendarTask calendarId
         , body = Http.jsonBody (Encode.list taskEncoder newTasks)
-        , expect = HttpEx.expectString CalnedarEntry.GetCalendarEntryTasksResult
+        , expect = HttpEx.expectString CalnedarEntry.GetCalendarEntryTasksAfterCopyResult
         , timeout = Nothing
         , tracker = Nothing
         }

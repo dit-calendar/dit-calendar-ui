@@ -143,4 +143,11 @@ saveCalendarEntryResponse response model =
 
 copyCalendarEntryResponse : Result (HttpEx.Error String) ( Http.Metadata, String ) -> Model -> Model
 copyCalendarEntryResponse response model =
-    calendarEntryResponse response model SuccessCopy
+    let
+        parsedModel =
+            calendarEntryResponse response model (Problems [])
+
+        parsedCalendar =
+            parsedModel.calendarEntry
+    in
+    { parsedModel | calendarEntry = { parsedCalendar | version = parsedCalendar.version + 1 } }
