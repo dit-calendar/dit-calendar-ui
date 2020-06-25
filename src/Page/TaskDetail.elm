@@ -7,7 +7,7 @@ import Bootstrap.Form.Input as Input
 import Browser
 import Data.Task exposing (Model, Msg(..), Task, TaskMsg(..))
 import Data.UIMessages exposing (Messages(..))
-import Endpoint.TaskEndpoint exposing (createTask, taskResponse, taskUpdateResponse, updateTask)
+import Endpoint.TaskEndpoint exposing (createTask, taskUpdateResponse, tasksResponse, updateTask)
 import Html exposing (Html, div, h4, text)
 import Html.Attributes exposing (class)
 import Maybe exposing (withDefault)
@@ -49,7 +49,7 @@ update msg model =
             )
 
         CreateTaskResult result ->
-            ( taskResponse result model, Cmd.none )
+            ( tasksResponse result model, Cmd.none )
 
         UpdateTaskResult result ->
             ( taskUpdateResponse result model, Cmd.none )

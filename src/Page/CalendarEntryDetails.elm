@@ -10,7 +10,7 @@ import Bootstrap.ListGroup as ListGroup
 import Bootstrap.Utilities.Spacing as Spacing
 import Browser.Navigation as Navigation
 import Data.CalendarEntry exposing (CalendarDetailMsg(..), CalendarEntry, Model, Msg(..), emptyCalendarEntry)
-import Data.Task exposing (Task, emptyTask)
+import Data.Task exposing (emptyTask)
 import Data.UIMessages exposing (Messages(..))
 import Endpoint.CalendarEntryEndpoint exposing (copyCalendarEntry, createCalendarEntry, getCalendarEntryResponse, loadCalendarEntry, saveCalendarEntry, saveCalendarEntryResponse)
 import Endpoint.CalendarTaskEndpoint exposing (calendarEntryTasksResponse, loadCalendarEntryTasks)

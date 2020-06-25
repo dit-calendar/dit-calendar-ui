@@ -34,23 +34,15 @@ saveCalendarEntry model =
 
 createCalendarEntry : CalendarEntry -> Cmd Msg
 createCalendarEntry model =
-    let
-        modelWithoutId =
-            { model | entryId = Nothing, version = 0 }
-    in
-    Http.riskyRequest
-        { method = "POST"
-        , headers = []
-        , url = Server.calendarEntries
-        , body = Http.jsonBody (calendarEntryEncoder modelWithoutId)
-        , expect = HttpEx.expectString SaveCalendarResult
-        , timeout = Nothing
-        , tracker = Nothing
-        }
+    newCalendar model SaveCalendarResult
 
 
 copyCalendarEntry : CalendarEntry -> Cmd Msg
 copyCalendarEntry model =
+    newCalendar model CopyCalendarResult
+
+
+newCalendar model resultMsg =
     let
         modelWithoutId =
             { model | entryId = Nothing, version = 0 }
@@ -60,7 +52,7 @@ copyCalendarEntry model =
         , headers = []
         , url = Server.calendarEntries
         , body = Http.jsonBody (calendarEntryEncoder modelWithoutId)
-        , expect = HttpEx.expectString CopyCalendarResult
+        , expect = HttpEx.expectString resultMsg
         , timeout = Nothing
         , tracker = Nothing
         }
