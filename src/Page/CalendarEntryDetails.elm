@@ -8,11 +8,13 @@ import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.ListGroup as ListGroup
 import Bootstrap.Utilities.Spacing as Spacing
+import Browser.Navigation as Navigation
 import Data.CalendarEntry exposing (CalendarDetailMsg(..), CalendarEntry, Model, Msg(..), emptyCalendarEntry)
 import Data.Task exposing (emptyTask)
 import Data.UIMessages exposing (Messages(..))
-import Endpoint.CalendarEntryEndpoint exposing (createCalendarEntry, getCalendarEntryResponse, loadCalendarEntry, saveCalendarEntry, saveCalendarEntryResponse)
+import Endpoint.CalendarEntryEndpoint exposing (copyCalendarEntry, createCalendarEntry, getCalendarEntryResponse, loadCalendarEntry, saveCalendarEntry, saveCalendarEntryResponse)
 import Endpoint.CalendarTaskEndpoint exposing (calendarEntryTasksResponse, loadCalendarEntryTasks)
+import Endpoint.TaskEndpoint exposing (copyTasks)
 import Html exposing (Html, div, h4, q, text)
 import Html.Attributes exposing (class)
 import Html.Events as HtmlEvent
@@ -68,6 +70,26 @@ update msg model =
             --TODO sobald id in url übergeben wird, werden tasks nachgeladen; selbst wenn calendar nicht existent
             ( model, loadCalendarEntry (withDefault 0 model.calendarEntry.entryId) )
 
+        CopyCalendar ->
+            let
+                oldCalendarEntry =
+                    model.calendarEntry
+
+                newCalendarEntry =
+                    { oldCalendarEntry | title = oldCalendarEntry.title ++ " (copy)", entryId = Nothing, version = 0 }
+            in
+            ( { model | messages = Problems [] }, Cmd.batch [ copyCalendarEntry newCalendarEntry ] )
+
+        CopyCalendarResult result ->
+            let
+                newModel =
+                    getCalendarEntryResponse result model
+            in
+            ( newModel, copyTasks (withDefault 0 newModel.calendarEntry.entryId) model.tasks )
+
+        GetCalendarEntryTasksAfterCopyResult _ ->
+            ( model, Navigation.load ("#calendar/" ++ String.fromInt (withDefault 0 model.calendarEntry.entryId)) )
+
 
 updateCalendarDetails : CalendarDetailMsg -> CalendarEntry -> CalendarEntry
 updateCalendarDetails msg model =
@@ -102,7 +124,20 @@ view model =
     in
     div []
         [ Form.form []
-            [ h4 [] [ text "Kalendar Eintrag" ]
+            [ case calendarInfo.entryId of
+                Just _ ->
+                    h4 []
+                        [ text "Kalendar Eintrag"
+                        , Button.button
+                            [ Button.outlineSecondary
+                            , Button.onClick CopyCalendar
+                            , Button.attrs [ Spacing.ml1 ]
+                            ]
+                            [ text "copy" ]
+                        ]
+
+                Nothing ->
+                    h4 [] [ text "Kalendar Eintrag" ]
             , Form.formInline []
                 [ Form.label [] [ text "title" ]
                 , Input.text [ Input.value calendarInfo.title, Input.onInput (CalendarDetailEditMsg << Title) ]

@@ -1,5 +1,6 @@
-module Endpoint.TaskEndpoint exposing (createTask, taskResponse, taskUpdateResponse, updateTask)
+module Endpoint.TaskEndpoint exposing (copyTasks, createTask, taskUpdateResponse, tasksResponse, updateTask)
 
+import Data.CalendarEntry as CalnedarEntry
 import Data.Task exposing (Model, Msg(..), Task)
 import Data.UIMessages exposing (Messages(..))
 import Endpoint.JsonParser.TaskParser exposing (parseTaskFromListResult, parseTaskResult, taskEncoder, taskErrorsDecoder)
@@ -25,19 +26,32 @@ updateTask model =
 
 createTask : Task -> Cmd Msg
 createTask model =
+    newTasks (withDefault 0 model.calendarEntryId) [ model ] CreateTaskResult
+
+
+copyTasks : Int -> List Task -> Cmd CalnedarEntry.Msg
+copyTasks calendarId models =
+    let
+        copiedTasks =
+            List.map (\model -> { model | calendarEntryId = Just calendarId, taskId = Nothing, version = 0 }) models
+    in
+    newTasks calendarId copiedTasks CalnedarEntry.GetCalendarEntryTasksAfterCopyResult
+
+
+newTasks calendarId tasks responseMsg =
     Http.riskyRequest
         { method = "POST"
         , headers = []
-        , url = Server.calendarTask (withDefault 0 model.calendarEntryId)
-        , body = Http.jsonBody (Encode.list taskEncoder [ model ])
-        , expect = HttpEx.expectString CreateTaskResult
+        , url = Server.calendarTask calendarId
+        , body = Http.jsonBody (Encode.list taskEncoder tasks)
+        , expect = HttpEx.expectString responseMsg
         , timeout = Nothing
         , tracker = Nothing
         }
 
 
-taskResponse : Result (HttpEx.Error String) ( Http.Metadata, String ) -> Model -> Model
-taskResponse response model =
+tasksResponse : Result (HttpEx.Error String) ( Http.Metadata, String ) -> Model -> Model
+tasksResponse response model =
     case response of
         Ok value ->
             let

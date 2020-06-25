@@ -1,4 +1,13 @@
-module Endpoint.CalendarEntryEndpoint exposing (calendarEntriesResponse, createCalendarEntry, getCalendarEntryResponse, loadCalendarEntries, loadCalendarEntry, saveCalendarEntry, saveCalendarEntryResponse)
+module Endpoint.CalendarEntryEndpoint exposing
+    ( calendarEntriesResponse
+    , copyCalendarEntry
+    , createCalendarEntry
+    , getCalendarEntryResponse
+    , loadCalendarEntries
+    , loadCalendarEntry
+    , saveCalendarEntry
+    , saveCalendarEntryResponse
+    )
 
 import Data.CalendarEntry exposing (CalendarEntry, Model, Msg(..))
 import Data.SimpleCalendarList as CalendarList
@@ -25,12 +34,25 @@ saveCalendarEntry model =
 
 createCalendarEntry : CalendarEntry -> Cmd Msg
 createCalendarEntry model =
+    newCalendar model SaveCalendarResult
+
+
+copyCalendarEntry : CalendarEntry -> Cmd Msg
+copyCalendarEntry model =
+    newCalendar model CopyCalendarResult
+
+
+newCalendar model resultMsg =
+    let
+        modelWithoutId =
+            { model | entryId = Nothing, version = 0 }
+    in
     Http.riskyRequest
         { method = "POST"
         , headers = []
         , url = Server.calendarEntries
-        , body = Http.jsonBody (calendarEntryEncoder model)
-        , expect = HttpEx.expectString SaveCalendarResult
+        , body = Http.jsonBody (calendarEntryEncoder modelWithoutId)
+        , expect = HttpEx.expectString resultMsg
         , timeout = Nothing
         , tracker = Nothing
         }
