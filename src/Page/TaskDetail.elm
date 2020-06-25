@@ -113,10 +113,6 @@ view model =
             SuccessUpdate ->
                 div [ class "success-messages" ]
                     [ viewSuccess "Task erfolgreich gespeichert" ]
-
-            SuccessCopy ->
-                div [ class "success-messages" ]
-                    [ viewSuccess "Task erfolgreich gespeichert" ]
         ]
 
 

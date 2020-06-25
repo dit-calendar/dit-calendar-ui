@@ -12,7 +12,7 @@ import Browser.Navigation as Navigation
 import Data.CalendarEntry exposing (CalendarDetailMsg(..), CalendarEntry, Model, Msg(..), emptyCalendarEntry)
 import Data.Task exposing (Task, emptyTask)
 import Data.UIMessages exposing (Messages(..))
-import Endpoint.CalendarEntryEndpoint exposing (copyCalendarEntry, copyCalendarEntryResponse, createCalendarEntry, getCalendarEntryResponse, loadCalendarEntry, saveCalendarEntry, saveCalendarEntryResponse)
+import Endpoint.CalendarEntryEndpoint exposing (copyCalendarEntry, createCalendarEntry, getCalendarEntryResponse, loadCalendarEntry, saveCalendarEntry, saveCalendarEntryResponse)
 import Endpoint.CalendarTaskEndpoint exposing (calendarEntryTasksResponse, loadCalendarEntryTasks)
 import Endpoint.TaskEndpoint exposing (copyTasks)
 import Html exposing (Html, div, h4, q, text)
@@ -83,16 +83,12 @@ update msg model =
         CopyCalendarResult result ->
             let
                 newModel =
-                    copyCalendarEntryResponse result model
+                    getCalendarEntryResponse result model
             in
             ( newModel, copyTasks (withDefault 0 newModel.calendarEntry.entryId) model.tasks )
 
-        GetCalendarEntryTasksAfterCopyResult result ->
-            let
-                newModel =
-                    copyCalendarEntryResponse result model
-            in
-            ( newModel, Navigation.load ("#calendar/" ++ String.fromInt (withDefault 0 newModel.calendarEntry.entryId)) )
+        GetCalendarEntryTasksAfterCopyResult _ ->
+            ( model, Navigation.load ("#calendar/" ++ String.fromInt (withDefault 0 model.calendarEntry.entryId)) )
 
 
 updateCalendarDetails : CalendarDetailMsg -> CalendarEntry -> CalendarEntry
@@ -197,10 +193,6 @@ view model =
             SuccessUpdate ->
                 div [ class "success-messages" ]
                     [ viewSuccess "Kalendereintrag erfolgreich gespeichert" ]
-
-            SuccessCopy ->
-                div [ class "success-messages" ]
-                    [ viewSuccess "Kalendereintrag erfolgreich kopiert" ]
         ]
 
 

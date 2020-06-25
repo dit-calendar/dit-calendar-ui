@@ -1,7 +1,6 @@
 module Endpoint.CalendarEntryEndpoint exposing
     ( calendarEntriesResponse
     , copyCalendarEntry
-    , copyCalendarEntryResponse
     , createCalendarEntry
     , getCalendarEntryResponse
     , loadCalendarEntries
@@ -139,15 +138,3 @@ getCalendarEntryResponse response model =
 saveCalendarEntryResponse : Result (HttpEx.Error String) ( Http.Metadata, String ) -> Model -> Model
 saveCalendarEntryResponse response model =
     calendarEntryResponse response model SuccessUpdate
-
-
-copyCalendarEntryResponse : Result (HttpEx.Error String) ( Http.Metadata, String ) -> Model -> Model
-copyCalendarEntryResponse response model =
-    let
-        parsedModel =
-            calendarEntryResponse response model (Problems [])
-
-        parsedCalendar =
-            parsedModel.calendarEntry
-    in
-    { parsedModel | calendarEntry = { parsedCalendar | version = parsedCalendar.version + 1 } }
