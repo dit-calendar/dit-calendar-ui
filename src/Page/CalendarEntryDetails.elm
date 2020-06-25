@@ -44,7 +44,7 @@ update msg model =
         GetCalendarEntryTasksResult result ->
             ( calendarEntryTasksResponse result model, Cmd.none )
 
-        SaveCalendar ->
+        SaveCalendarMsg ->
             ( { model | messages = Problems [] }
             , if not (model.calendarEntry.entryId == Nothing) then
                 saveCalendarEntry model.calendarEntry
@@ -56,7 +56,7 @@ update msg model =
         SaveCalendarResult result ->
             ( saveCalendarEntryResponse result model, Cmd.none )
 
-        OpenTaskDetailsView _ ->
+        OpenTaskDetailsViewMsg _ ->
             ( model, Cmd.none )
 
         GetCalendarEntryResult result ->
@@ -66,11 +66,11 @@ update msg model =
             in
             ( newCalendarModel, loadCalendarEntryTasks (withDefault 0 newCalendarModel.calendarEntry.entryId) )
 
-        GetCalendarEntry ->
+        GetCalendarEntryMsg ->
             --TODO sobald id in url übergeben wird, werden tasks nachgeladen; selbst wenn calendar nicht existent
             ( model, loadCalendarEntry (withDefault 0 model.calendarEntry.entryId) )
 
-        CopyCalendar ->
+        CopyCalendarMsg ->
             let
                 oldCalendarEntry =
                     model.calendarEntry
@@ -130,7 +130,7 @@ view model =
                         [ text "Kalendar Eintrag"
                         , Button.button
                             [ Button.outlineSecondary
-                            , Button.onClick CopyCalendar
+                            , Button.onClick CopyCalendarMsg
                             , Button.attrs [ Spacing.ml1 ]
                             ]
                             [ text "copy" ]
@@ -158,17 +158,17 @@ view model =
         , ListGroup.custom
             (List.map
                 (\task ->
-                    ListGroup.button [ ListGroup.attrs [ HtmlEvent.onClick (OpenTaskDetailsView task) ] ] [ text ("task: " ++ task.title) ]
+                    ListGroup.button [ ListGroup.attrs [ HtmlEvent.onClick (OpenTaskDetailsViewMsg task) ] ] [ text ("task: " ++ task.title) ]
                 )
                 tasks
             )
-        , Button.button [ Button.success, onClick SaveCalendar ] [ text "Speichern" ]
+        , Button.button [ Button.success, onClick SaveCalendarMsg ] [ text "Speichern" ]
 
         -- hide button for create task if calendar entry is not existing yet
         , case calendarInfo.entryId of
             Just eId ->
                 Button.button
-                    [ Button.primary, Button.onClick (OpenTaskDetailsView (emptyTask eId calendarInfo.startDate)), Button.attrs [ Spacing.ml1 ] ]
+                    [ Button.primary, Button.onClick (OpenTaskDetailsViewMsg (emptyTask eId calendarInfo.startDate)), Button.attrs [ Spacing.ml1 ] ]
                     [ text "Neuen Task Eintrag erstellen" ]
 
             Nothing ->

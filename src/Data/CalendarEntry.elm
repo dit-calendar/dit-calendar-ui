@@ -41,12 +41,12 @@ type CalendarDetailMsg
 
 type Msg
     = CalendarDetailEditMsg CalendarDetailMsg
-    | GetCalendarEntry
+    | GetCalendarEntryMsg
     | GetCalendarEntryResult (Result (HttpEx.Error String) ( Http.Metadata, String ))
     | GetCalendarEntryTasksResult (Result (HttpEx.Error String) ( Http.Metadata, String ))
     | GetCalendarEntryTasksAfterCopyResult (Result (HttpEx.Error String) ( Http.Metadata, String ))
-    | SaveCalendar
-    | CopyCalendar
+    | SaveCalendarMsg
+    | CopyCalendarMsg
     | SaveCalendarResult (Result (HttpEx.Error String) ( Http.Metadata, String ))
     | CopyCalendarResult (Result (HttpEx.Error String) ( Http.Metadata, String ))
-    | OpenTaskDetailsView Task
+    | OpenTaskDetailsViewMsg Task

@@ -36,10 +36,10 @@ init task =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        TaskMsg taskMsg ->
+        TaskEditMsg taskMsg ->
             ( { model | task = updateTaskDetials taskMsg model.task }, Cmd.none )
 
-        SaveTask ->
+        SaveTaskMsg ->
             ( { model | messages = Problems [] }
             , if model.task.taskId /= Nothing then
                 updateTask model.task
@@ -88,24 +88,24 @@ view model =
             [ h4 [] [ text "Task Eintrag" ]
             , Form.formInline []
                 [ Form.label [] [ text "title" ]
-                , Input.text [ Input.value taskInfo.title, Input.onInput (TaskMsg << Title) ]
+                , Input.text [ Input.value taskInfo.title, Input.onInput (TaskEditMsg << Title) ]
                 ]
             , Form.formInline []
                 [ Form.label [] [ text "description" ]
-                , Input.text [ Input.value (withDefault "" taskInfo.description), Input.onInput (TaskMsg << Description) ]
+                , Input.text [ Input.value (withDefault "" taskInfo.description), Input.onInput (TaskEditMsg << Description) ]
                 ]
             , Form.formInline []
                 [ Form.label [] [ text "start date" ]
-                , Input.date [ Input.value taskInfo.startDate, Input.onInput (TaskMsg << StartDate) ]
-                , Input.time [ Input.value taskInfo.startTime, Input.onInput (TaskMsg << StartTime) ]
+                , Input.date [ Input.value taskInfo.startDate, Input.onInput (TaskEditMsg << StartDate) ]
+                , Input.time [ Input.value taskInfo.startTime, Input.onInput (TaskEditMsg << StartTime) ]
                 ]
             , Form.formInline []
                 [ Form.label [] [ text "end date" ]
-                , Input.date [ Input.value (withDefault "" taskInfo.endDate), Input.onInput (TaskMsg << EndDate) ]
-                , Input.time [ Input.value (withDefault "" taskInfo.endTime), Input.onInput (TaskMsg << EndTime) ]
+                , Input.date [ Input.value (withDefault "" taskInfo.endDate), Input.onInput (TaskEditMsg << EndDate) ]
+                , Input.time [ Input.value (withDefault "" taskInfo.endTime), Input.onInput (TaskEditMsg << EndTime) ]
                 ]
             ]
-        , Button.button [ Button.success, Button.onClick SaveTask ] [ text "Speichern" ]
+        , Button.button [ Button.success, Button.onClick SaveTaskMsg ] [ text "Speichern" ]
         , case model.messages of
             Problems errors ->
                 div [ class "error-messages" ] (List.map viewProblem errors)

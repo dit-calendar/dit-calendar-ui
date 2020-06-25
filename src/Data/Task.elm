@@ -42,7 +42,7 @@ type TaskMsg
 
 
 type Msg
-    = TaskMsg TaskMsg
-    | SaveTask
+    = TaskEditMsg TaskMsg
+    | SaveTaskMsg
     | UpdateTaskResult (Result (HttpEx.Error String) ( Http.Metadata, String ))
     | CreateTaskResult (Result (HttpEx.Error String) ( Http.Metadata, String ))

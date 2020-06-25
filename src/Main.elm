@@ -152,7 +152,7 @@ update msg model =
 
         CalendarDetailMsg calendarDetailMsg ->
             case calendarDetailMsg of
-                CalendarEntryDetails.OpenTaskDetailsView task ->
+                CalendarEntryDetails.OpenTaskDetailsViewMsg task ->
                     stepTaskDetails model (TaskDetail.init task)
 
                 _ ->
@@ -241,7 +241,7 @@ urlUpdate url model =
 
                 CalendarDetailsPage calendar ->
                     -- needed to perform request if url was changed
-                    stepCalendarDetails model (CalendarEntryDetails.update CalendarEntryDetails.GetCalendarEntry calendar)
+                    stepCalendarDetails model (CalendarEntryDetails.update CalendarEntryDetails.GetCalendarEntryMsg calendar)
 
                 _ ->
                     ( { model | page = route }, Cmd.none )
