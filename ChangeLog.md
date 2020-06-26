@@ -1,5 +1,11 @@
 # Revision history for dit-calendar
 
+## 0.7.0.0 -- 2020-06-26
+* split up repos
+* copy calendar entry
+* info box for posting calendar in bot
+* improve error messages
+
 ## 0.6.0.0 -- 2020-06-01
 * create telegram bot
   * written in kotlin with kt-telegram-bot lib
