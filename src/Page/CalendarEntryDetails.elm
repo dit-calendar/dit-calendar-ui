@@ -54,7 +54,11 @@ update msg model =
             )
 
         SaveCalendarResult result ->
-            ( saveCalendarEntryResponse result model, Cmd.none )
+            let
+                newCalendarModel =
+                    getCalendarEntryResponse result model
+            in
+            ( newCalendarModel, loadCalendarEntryTasks (withDefault 0 newCalendarModel.calendarEntry.entryId) )
 
         OpenTaskDetailsViewMsg _ ->
             ( model, Cmd.none )
@@ -158,7 +162,7 @@ view model =
         , ListGroup.custom
             (List.map
                 (\task ->
-                    ListGroup.button [ ListGroup.attrs [ HtmlEvent.onClick (OpenTaskDetailsViewMsg task) ] ] [ text ("task: " ++ task.title) ]
+                    ListGroup.button [ ListGroup.attrs [ HtmlEvent.onClick (OpenTaskDetailsViewMsg task) ] ] [ text ("task: " ++ task.title ++ " " ++ task.startTime ++ " Uhr") ]
                 )
                 tasks
             )
