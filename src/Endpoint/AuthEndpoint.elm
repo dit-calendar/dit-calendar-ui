@@ -1,5 +1,6 @@
 module Endpoint.AuthEndpoint exposing (login, logout, loginResponse, register, registerResponse)
 
+import Browser.Navigation as Navigation
 import Data.Login as Login
 import Data.Logout as Logout
 import Data.Register as Register
@@ -48,11 +49,11 @@ register model =
         }
 
 
-registerResponse : Result (HttpEx.Error String) ( Http.Metadata, String ) -> Register.Model -> Register.Model
+registerResponse : Result (HttpEx.Error String) ( Http.Metadata, String ) -> Register.Model -> (Register.Model, Cmd Register.Msg)
 registerResponse response model =
     case response of
-        Ok value ->
-            model
+        Ok _ ->
+            (model, Navigation.load "#login")
 
         Err error ->
-            { model | problems = authErrorDecoder error }
+            ({ model | problems = authErrorDecoder error }, Cmd.none)

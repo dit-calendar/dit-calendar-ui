@@ -41,7 +41,7 @@ update msg model =
             ( model, register model )
 
         RegisterResult result ->
-            ( registerResponse result model, Cmd.none )
+            registerResponse result model
 
 
 updateRegister : RegisterMsg -> RegisterModel -> ( RegisterModel, Cmd Msg )
