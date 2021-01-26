@@ -1,9 +1,7 @@
 module Page.RegisterTest exposing (updateTest)
 
 import Data.Register as RegisterPage exposing (Model)
-import Dict exposing (Dict)
 import Expect
-import Http exposing (Metadata)
 import Http.Detailed exposing (Error(..))
 import Page.Register as RegisterPage
 import Test exposing (Test, describe, test)
@@ -14,21 +12,7 @@ updateTest : Test
 updateTest =
     describe "update"
         [ describe "registerResult"
-            [ test "case ok" <|
-                \_ ->
-                    let
-                        registerResult =
-                            RegisterPage.RegisterResult (Ok ( Metadata "" 0 "" Dict.empty, "ok" ))
-
-                        startModel =
-                            Model (RegisterPage.RegisterModel "" "" "" "") []
-                    in
-                    Expect.all
-                        [ first >> Expect.equal startModel
-                        , second >> Expect.equal Cmd.none
-                        ]
-                        (RegisterPage.update registerResult startModel)
-            , test "case error" <|
+            [ test "case error" <|
                 \_ ->
                     let
                         registerResult =

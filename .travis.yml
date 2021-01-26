@@ -2,7 +2,7 @@ language: elm
 elm:
   - latest-0.19.1
 elm-test: 0.19.1-revision4
-elm-format: 0.8.2
+elm-format: 0.8.4
 script:
   - elm make src/Main.elm --output src/Main.js
   - elm-test
